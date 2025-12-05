@@ -6,15 +6,39 @@ import {
   analyzePassword,
 } from "./api/client";
 
+type InfoResponse = {
+  service: string;
+  version: string;
+  environment: string;
+};
+
+type AnalyzeTextResult = {
+  text: string;
+  length: number;
+  word_count: number;
+  has_numbers: boolean;
+  has_uppercase: boolean;
+};
+
+type AnalyzePasswordResult = {
+  score: number;
+  length: number;
+  has_numbers: boolean;
+  has_uppercase: boolean;
+  has_special_chars: boolean;
+};
+
+
+
 function App() {
   const [health, setHealth] = useState<string | null>(null);
-  const [info, setInfo] = useState<any | null>(null);
+  const [info, setInfo] = useState<InfoResponse | null>(null);
 
   const [textInput, setTextInput] = useState("");
-  const [textResult, setTextResult] = useState<any | null>(null);
+  const [textResult, setTextResult] = useState<AnalyzeTextResult | null>(null);
 
   const [passwordInput, setPasswordInput] = useState("");
-  const [passwordResult, setPasswordResult] = useState<any | null>(null);
+  const [passwordResult, setPasswordResult] = useState<AnalyzePasswordResult | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,9 +49,13 @@ function App() {
       setLoading(true);
       const data = await getHealth();
       setHealth(JSON.stringify(data));
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
+    } catch (e) {
+  if (e instanceof Error) {
+    setError(e.message);
+  } else {
+    setError("Unexpected error");
+  }
+} finally {
       setLoading(false);
     }
   }
@@ -38,9 +66,13 @@ function App() {
       setLoading(true);
       const data = await getInfo();
       setInfo(data);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
+    } catch (e) {
+  if (e instanceof Error) {
+    setError(e.message);
+  } else {
+    setError("Unexpected error");
+  }
+} finally {
       setLoading(false);
     }
   }
@@ -52,9 +84,13 @@ function App() {
       setLoading(true);
       const data = await analyzeText(textInput);
       setTextResult(data);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
+    } catch (e) {
+  if (e instanceof Error) {
+    setError(e.message);
+  } else {
+    setError("Unexpected error");
+  }
+}finally {
       setLoading(false);
     }
   }
@@ -66,9 +102,13 @@ function App() {
       setLoading(true);
       const data = await analyzePassword(passwordInput);
       setPasswordResult(data);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
+    } catch (e) {
+  if (e instanceof Error) {
+    setError(e.message);
+  } else {
+    setError("Unexpected error");
+  }
+} finally {
       setLoading(false);
     }
   }
